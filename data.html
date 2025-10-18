@@ -1,1 +1,222 @@
-<!-- data.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EduInsight — Data visualization</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* === chart containers for full-height, centered canvases === */
+    .chart-card{display:flex;align-items:center;justify-content:center;min-height:360px}
+    .chart-card.wide{min-height:420px}
+    .chart-card canvas{width:100% !important;height:100% !important}
+  </style>
+</head>
+<body>
+  <!-- header -->
+  <header class="site-header">
+    <div class="container navbar">
+      <div class="logo">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="2" width="28" height="28" rx="8" stroke="url(#g)" stroke-width="2"/>
+          <path d="M9 17l5 5 9-12" stroke="url(#g)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <defs>
+            <linearGradient id="g" x1="0" y1="0" x2="32" y2="32">
+              <stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#22c55e"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span>EduInsight</span>
+      </div>
+      <nav class="nav">
+        <a href="index.html">Home</a>
+        <a class="active" href="data.html">Data visualization</a>
+        <a href="about.html">About</a>
+        <a href="mybot.html">Ask EduBot</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- charts -->
+  <section class="card">
+    <h1 class="h1">Data visualization</h1>
+    <p class="subtitle">Two charts on top and one wide chart below.</p>
+
+    <div class="charts">
+      <!-- Enrollments by Term (stacked by program) -->
+      <div class="card">
+        <h3 class="subtitle" style="text-align:center;margin:0 0 8px 0;">Enrollments by Term (stacked by program)</h3>
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:360px;">
+          <canvas id="ch-enrollments" style="width:100% !important;height:100% !important;"></canvas>
+        </div>
+      </div>
+
+      <!-- Program Distribution -->
+      <div class="card">
+        <h3 class="subtitle" style="text-align:center;margin:0 0 8px 0;">Program Distribution</h3>
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:360px;">
+          <canvas id="ch-programs" style="width:100% !important;height:100% !important;"></canvas>
+        </div>
+      </div>
+
+      <!-- Average GPA by Term -->
+      <div class="card wide">
+        <h3 class="subtitle" style="text-align:center;margin:0 0 8px 0;">Average GPA by Term</h3>
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:420px;">
+          <canvas id="ch-gpa" style="width:100% !important;height:100% !important;"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+  </main>
+
+  <!-- footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <p class="muted">© 2025 EduInsight. For academic demonstration.</p>
+    </div>
+  </footer>
+
+  <!-- scripts -->
+  <script>
+  // -- constants --
+  const TERM_ORDER = ["Spring 2024","Summer 2024","Fall 2024","Spring 2025","Summer 2025","Fall 2025"];
+
+  // -- csv utils --
+  async function loadCSV(){
+    const r = await fetch('data/enrollments.csv');
+    const t = await r.text();
+    return t.trim().split('\n').slice(1).map(line=>{
+      const [id,name,program,term,gpa,date] = line.split(',');
+      return {id,name,program,term,gpa:parseFloat(gpa),date};
+    });
+  }
+  function groupBy(xs, key){
+    return xs.reduce((m,x)=>((m[x[key]] = m[x[key]] || []).push(x), m), {});
+  }
+  function unique(xs){return [...new Set(xs)]}
+
+  // -- charts --
+  (async ()=>{
+    try{
+      const rows = await loadCSV();
+
+      // ===== Enrollments by term (stacked by program) =====
+      const programs = unique(rows.map(r=>r.program)).sort();
+      const byTerm = groupBy(rows,'term');
+
+      const stackedDatasets = programs.map((p, i) => {
+        const data = TERM_ORDER.map(term =>
+          (byTerm[term] || []).filter(r => r.program === p).length
+        );
+        return { label: p, data };
+      });
+
+      const enrollmentsCtx = document.getElementById('ch-enrollments');
+      new Chart(enrollmentsCtx, {
+        type: 'bar',
+        data: { labels: TERM_ORDER, datasets: stackedDatasets },
+        options: {
+          maintainAspectRatio: false,
+          responsive: true,
+          scales: {
+            x: { stacked: true },
+            y: { stacked: true, beginAtZero: true, ticks: { precision: 0 } }
+          },
+          plugins: {
+            legend: { position: 'bottom' },
+            tooltip: {
+              callbacks: {
+                footer: (items) => {
+                  const total = items[0].chart.data.datasets
+                    .reduce((sum, ds) => sum + (ds.data[items[0].dataIndex] || 0), 0);
+                  return 'Total: ' + total;
+                }
+              }
+            }
+          }
+        }
+      });
+
+      // ===== Program distribution (doughnut with % in tooltip) =====
+      const byProg = groupBy(rows,'program');
+      const progLabels = Object.keys(byProg).sort();
+      const progCounts = progLabels.map(p => byProg[p].length);
+      const grandTotal = progCounts.reduce((a,b)=>a+b,0);
+
+      const programsCtx = document.getElementById('ch-programs');
+      new Chart(programsCtx, {
+        type: 'doughnut',
+        data: { labels: progLabels, datasets: [{ label: 'By program', data: progCounts }] },
+        options: {
+          maintainAspectRatio: false,
+          responsive: true,
+          plugins: {
+            legend: { position: 'bottom' },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => {
+                  const count = ctx.parsed;
+                  const pct = grandTotal ? ((count / grandTotal) * 100).toFixed(1) : 0;
+                  return `${ctx.label}: ${count} (${pct}%)`;
+                }
+              }
+            }
+          }
+        }
+      });
+
+      // ===== Average GPA by term (line) + benchmark line =====
+      const gpaSeries = TERM_ORDER.map(t=>{
+        const arr = (byTerm[t] || []);
+        if(!arr.length) return null;
+        const avg = arr.reduce((a,b)=>a+b.gpa,0) / arr.length;
+        return Number(avg.toFixed(2));
+      });
+      const benchmark = 3.5;
+      const benchmarkSeries = TERM_ORDER.map(()=>benchmark);
+
+      const gpaCtx = document.getElementById('ch-gpa');
+      new Chart(gpaCtx, {
+        type: 'line',
+        data: {
+          labels: TERM_ORDER,
+          datasets: [
+            { label: 'Average GPA', data: gpaSeries, spanGaps: true, tension: 0.25 },
+            { label: 'Benchmark 3.50', data: benchmarkSeries, pointRadius: 0, borderDash: [6,4] }
+          ]
+        },
+        options: {
+          maintainAspectRatio: false,
+          responsive: true,
+          scales: {
+            y: { suggestedMin: 0, suggestedMax: 4, ticks: { stepSize: 0.5 } }
+          },
+          plugins: {
+            legend: { position: 'bottom' },
+            tooltip: {
+              callbacks: {
+                afterBody: (items) => {
+                  const i = items[0].dataIndex;
+                  const curr = gpaSeries[i];
+                  const prev = i > 0 ? gpaSeries[i-1] : null;
+                  if(curr == null || prev == null) return;
+                  const delta = (curr - prev).toFixed(2);
+                  const sign = delta > 0 ? '+' : '';
+                  return `Change vs prev: ${sign}${delta}`;
+                }
+              }
+            }
+          }
+        }
+      });
+
+    }catch(e){
+      console.error(e);
+    }
+  })();
+  </script>
+</body>
+</html>
