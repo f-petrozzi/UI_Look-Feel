@@ -103,3 +103,37 @@ img{max-width:100%;display:block}
 .profile{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px}
 .avatar{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--border);background:#0f121a;font-weight:700}
 .role{color:var(--muted);font-size:14px}
+
+/* === Bot (mybot.html) === */
+/* small space between the intro card and the bot card */
+.card + .card { margin-top: 20px; }
+
+/* the bot lives inside a card that should have no inner padding for full-bleed chat */
+.chat-card { padding: 0; overflow: hidden; height: 700px; }
+
+/* make the embedded Botpress webchat fill the card */
+#bp-embedded-webchat,
+#bp-embedded-webchat .bpWebchat {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  position: unset !important;
+}
+
+/* desktop height for the chat area */
+#bp-embedded-webchat { height: 640px; }
+
+/* hide the floating button since we’re embedding the chat */
+.bpFab { display: none !important; }
+
+/* responsive height */
+@media (max-width: 768px) {
+  #bp-embedded-webchat { height: 75vh !important; }
+}
+
+/* optional: align chat font with site */
+.bpWebchat, .bpWebchat * {
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Noto Sans,
+               Ubuntu, Cantarell, Helvetica Neue, Arial, "Apple Color Emoji","Segoe UI Emoji" !important;
+}
