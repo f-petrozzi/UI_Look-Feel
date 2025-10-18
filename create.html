@@ -1,1 +1,102 @@
-<!-- create.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Enrollment</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Create New Enrollment</h1>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="read.html">View</a>
+                <a href="update.html">Update</a>
+                <a href="delete.html">Delete</a>
+                <a href="about.html">About</a>
+            </nav>
+        </header>
+
+        <main>
+            <form id="createForm" action="#" method="post">
+                <div class="form-group">
+                    <label for="studentId">Student ID:</label>
+                    <input type="text" id="studentId" name="studentId" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="studentName">Student Name:</label>
+                    <input type="text" id="studentName" name="studentName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="courseId">Course ID:</label>
+                    <input type="text" id="courseId" name="courseId" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="courseName">Course Name:</label>
+                    <input type="text" id="courseName" name="courseName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="enrollmentDate">Enrollment Date:</label>
+                    <input type="date" id="enrollmentDate" name="enrollmentDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="status">Status:</label>
+                    <select id="status" name="status" required>
+                        <option value="">Select Status</option>
+                        <option value="active">Active</option>
+                        <option value="pending">Pending</option>
+                        <option value="completed">Completed</option>
+                        <option value="withdrawn">Withdrawn</option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Create Enrollment</button>
+                    <button type="reset" class="btn-secondary">Reset Form</button>
+                    <a href="index.html" class="btn-cancel">Cancel</a>
+                </div>
+            </form>
+
+            <div id="message" class="message hidden"></div>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Enrollment Management System</p>
+        </footer>
+    </div>
+
+    <script>
+        // Form submission handler
+        document.getElementById('createForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                studentId: document.getElementById('studentId').value,
+                studentName: document.getElementById('studentName').value,
+                courseId: document.getElementById('courseId').value,
+                courseName: document.getElementById('courseName').value,
+                enrollmentDate: document.getElementById('enrollmentDate').value,
+                status: document.getElementById('status').value
+            };
+
+            // Display success message
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = 'Enrollment created successfully!';
+            messageDiv.className = 'message success';
+            
+            // Reset form after 2 seconds
+            setTimeout(() => {
+                this.reset();
+                messageDiv.className = 'message hidden';
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
