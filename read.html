@@ -1,1 +1,85 @@
-<!-- read.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EduInsight</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+</head>
+<body>
+  <!-- header -->
+  <header class="site-header">
+    <div class="container navbar">
+      <div class="logo">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="2" width="28" height="28" rx="8" stroke="url(#g)" stroke-width="2"/>
+          <path d="M9 17l5 5 9-12" stroke="url(#g)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <defs>
+            <linearGradient id="g" x1="0" y1="0" x2="32" y2="32">
+              <stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#22c55e"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span>EduInsight</span>
+      </div>
+      <nav class="nav">
+        <a class="" href="index.html">Home</a>
+        <a class="" href="data.html">Data visualization</a>
+        <a class="" href="about.html">About</a>
+        <a class="" href="mybot.html">Ask EduBot</a>
+      </nav>
+    </div>
+  </header>
+  <main class="container">
+
+  <!-- crud tabs -->
+  <nav class="crud-nav">
+    <a class="active" href="read.html">View enrollments</a>
+    <a href="create.html">Add enrollment</a>
+    <a href="update.html">Update enrollment</a>
+    <a href="delete.html">Delete enrollment</a>
+  </nav>
+
+  <!-- table -->
+  <section class="card">
+    <h1 class="h1">View enrollments</h1>
+    <table class="table" id="tbl">
+      <thead><tr>
+        <th>Student ID</th><th>Name</th><th>Program</th><th>Term</th><th>GPA</th><th>Actions</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+  <script>
+  async function loadCSV(){
+    const r=await fetch('data/enrollments.csv');
+    const t=await r.text();
+    return t.trim().split('\n').slice(1).map(line=>{
+      const [id,name,program,term,gpa,date]=line.split(',');
+      return {id,name,program,term,gpa,date}
+    })
+  }
+  (async ()=>{
+    const rows=await loadCSV();const tb=document.querySelector('#tbl tbody');
+    rows.forEach(r=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td>${r.id}</td><td>${r.name}</td><td>${r.program}</td><td>${r.term}</td><td>${parseFloat(r.gpa).toFixed(2)}</td>
+        <td class="actions">
+          <a class="btn" href="update.html?student_id=${encodeURIComponent(r.id)}">Edit</a>
+          <a class="btn danger" href="delete.html?student_id=${encodeURIComponent(r.id)}">Delete</a>
+        </td>`;
+      tb.appendChild(tr)
+    })
+  })()
+  </script>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container">
+      <p class="muted">© 2025 EduInsight. For academic demonstration.</p>
+    </div>
+  </footer>
+</body>
+</html>
