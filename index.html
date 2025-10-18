@@ -1,1 +1,105 @@
-<!-- index.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EduInsight</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+</head>
+<body>
+  <!-- header -->
+  <header class="site-header">
+    <div class="container navbar">
+      <div class="logo">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="2" width="28" height="28" rx="8" stroke="url(#g)" stroke-width="2"/>
+          <path d="M9 17l5 5 9-12" stroke="url(#g)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <defs>
+            <linearGradient id="g" x1="0" y1="0" x2="32" y2="32">
+              <stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#22c55e"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span>EduInsight</span>
+      </div>
+      <nav class="nav">
+        <a class="active" href="index.html">Home</a>
+        <a class="" href="data.html">Data visualization</a>
+        <a class="" href="about.html">About</a>
+        <a class="" href="mybot.html">Ask EduBot</a>
+      </nav>
+    </div>
+  </header>
+  <main class="container">
+
+  <!-- hero -->
+  <section class="card">
+    <h1 class="h1">Student enrollment at a glance</h1>
+    <p class="subtitle">Track programs, GPA trends, and enrollments per term for clear academic insights.</p>
+    <div class="grid cols-4" id="metrics">
+      <div class="metric card"><span class="label">Total students</span><span class="value" id="m-students">—</span></div>
+      <div class="metric card"><span class="label">Average GPA</span><span class="value" id="m-gpa">—</span></div>
+      <div class="metric card"><span class="label">Programs</span><span class="value" id="m-programs">—</span></div>
+      <div class="metric card"><span class="label">Enrollments this term</span><span class="value" id="m-term">—</span></div>
+    </div>
+  </section>
+
+  <!-- intro: project idea, purpose, key features with links -->
+  <section class="card" aria-labelledby="intro-title">
+    <h2 id="intro-title" class="h2">What is EduInsight?</h2>
+    <p>
+      EduInsight is a static prototype for an academic analytics app. Its purpose is to help programs quickly understand enrollment patterns and student performance by
+      summarizing key metrics on the Home page, visualizing trends on the <a href="data.html">Data visualization</a> page, and organizing project context on the
+      <a href="about.html">About</a> page.
+    </p>
+    <p>
+      Key features include interactive charts powered by Chart.js (<a href="data.html">see charts</a>), simulated CRUD navigation to demonstrate how records would be created, viewed, updated, and deleted (buttons below), and an integrated Botpress assistant for dataset Q&amp;A (<a href="mybot.html">Ask EduBot</a>).
+    </p>
+  </section>
+
+  <!-- manage data -->
+  <section style="margin-top:16px">
+    <div class="grid cols-4">
+      <a class="card btn" href="read.html">View enrollments</a>
+      <a class="card btn" href="create.html">Add enrollment</a>
+      <a class="card btn" href="update.html">Update enrollment</a>
+      <a class="card btn" href="delete.html">Delete enrollment</a>
+    </div>
+  </section>
+
+  <script>
+  async function loadCSV(){
+    const r = await fetch('data/enrollments.csv');
+    const t = await r.text();
+    return t.trim().split('\n').slice(1).map(line=>{
+      const [id,name,program,term,gpa,date] = line.split(',');
+      return {id,name,program,term,gpa:parseFloat(gpa),date}
+    })
+  }
+  function avg(arr){return arr.length? (arr.reduce((a,b)=>a+b,0)/arr.length):0}
+  (async ()=>{
+    try{
+      const rows = await loadCSV();
+      const students = new Set(rows.map(r=>r.id));
+      const programs = new Set(rows.map(r=>r.program));
+      const termCounts = rows.reduce((m,r)=>((m[r.term]=(m[r.term]||0)+1),m),{});
+      const topTerm = Object.entries(termCounts).sort((a,b)=>b[1]-a[1])[0]?.[0] || '—';
+      const gpaByStudent = [...students].map(id=>avg(rows.filter(r=>r.id===id).map(r=>r.gpa)));
+      document.getElementById('m-students').textContent = students.size;
+      document.getElementById('m-gpa').textContent = avg(gpaByStudent).toFixed(2);
+      document.getElementById('m-programs').textContent = programs.size;
+      document.getElementById('m-term').textContent = termCounts[topTerm] || 0;
+    }catch(e){console.error(e)}
+  })();
+  </script>
+
+  </main>
+  <footer class="site-footer">
+    <div class="container">
+      <p class="muted">© 2025 EduInsight. For academic demonstration.</p>
+    </div>
+  </footer>
+</body>
+</html>

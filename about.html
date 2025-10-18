@@ -1,1 +1,94 @@
-<!-- about.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EduInsight</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+</head>
+<body>
+  <!-- header -->
+  <header class="site-header">
+    <div class="container navbar">
+      <div class="logo">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="2" width="28" height="28" rx="8" stroke="url(#g)" stroke-width="2"/>
+          <path d="M9 17l5 5 9-12" stroke="url(#g)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <defs>
+            <linearGradient id="g" x1="0" y1="0" x2="32" y2="32">
+              <stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#22c55e"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span>EduInsight</span>
+      </div>
+      <nav class="nav">
+        <a class="" href="index.html">Home</a>
+        <a class="" href="data.html">Data visualization</a>
+        <a class="active" href="about.html">About</a>
+        <a class="" href="mybot.html">Ask EduBot</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+
+  <!-- team -->
+  <section class="card">
+    <h1 class="h1">Team</h1>
+    <div class="grid cols-4">
+      <div class="profile">
+        <div class="avatar">FP</div>
+        <div><strong>Fabrizio Petrozzi</strong></div>
+        <div class="role">Data Visualization & Styling</div>
+        <div>Contributions: built <code>data.html</code> and the data table (CSV), finalized website styling, authored <code>main.css</code>, and edited the final report.</div>
+      </div>
+      <div class="profile">
+        <div class="avatar">AM</div>
+        <div><strong>Andrey Martynenko</strong></div>
+        <div class="role">Front-End & Documentation</div>
+        <div>Contributions: created <code>index.html</code> (Home) and the About Us page, and wrote the final report.</div>
+      </div>
+      <div class="profile">
+        <div class="avatar">BR</div>
+        <div><strong>Bryan Reeder</strong></div>
+        <div class="role">Data Model & CRUD Engineering</div>
+        <div>Contributions: designed the ERD and implemented CRUD code (Read, Write, Update, Delete).</div>
+      </div>
+      <div class="profile">
+        <div class="avatar">HB</div>
+        <div><strong>Hammaz Buksh</strong></div>
+        <div class="role">Product & Chatbot</div>
+        <div>Contributions: led idea generation and project outline, and built the ChatBot.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- erd -->
+  <section class="card" style="margin-top:16px">
+    <h2 class="h1">Logical data model</h2>
+    <p class="subtitle">Core tables with one-to-many relationships.</p>
+    <img src="assets/erd.svg" alt="ERD showing Student→Enrollment (1-to-many) and Program→Enrollment (1-to-many)">
+    <p>Shown: <strong>Student → Enrollment</strong> (one student, many enrollments) and <strong>Program → Enrollment</strong> (one program, many enrollments); primary and foreign keys are labeled in the diagram.</p>
+  </section>
+
+  <!-- repo -->
+  <section class="card" style="margin-top:16px">
+    <h2 class="h1">Repository</h2>
+    <p class="subtitle">Code and documentation live in our GitHub repo.</p>
+    <p>
+      <a class="btn" href="https://github.com/f-petrozzi/UI_Look-Feel/" target="_blank" rel="noopener">Open GitHub repository</a>
+    </p>
+  </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="muted">© 2025 EduInsight. For academic demonstration.</p>
+    </div>
+  </footer>
+</body>
+</html>
