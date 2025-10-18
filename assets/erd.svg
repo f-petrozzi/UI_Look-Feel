@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="430" viewBox="0 0 920 430">
+  <defs>
+    <style>
+      .b{fill:#0f121a;stroke:#2a2f3a;stroke-width:1.2}
+      .t{fill:#e5e7eb;font:14px ui-sans-serif,system-ui}
+      .h{fill:#1b2030}
+      .pk{fill:#22c55e}
+      .fk{fill:#34d399}
+      .line{stroke:#34d399;stroke-width:2;marker-end:url(#arrow)}
+    </style>
+    <marker id="arrow" orient="auto" markerWidth="6" markerHeight="6" refX="5" refY="3">
+      <path d="M0,0 L6,3 L0,6 z" fill="#34d399"/>
+    </marker>
+  </defs>
+  <g transform="translate(30,40)">
+    <rect class="b" width="240" height="140" rx="10"/>
+    <rect class="h" x="0" y="0" width="240" height="34" rx="10"/>
+    <text class="t" x="12" y="22">Students</text>
+    <text class="t pk" x="12" y="60">StudentID (PK)</text>
+    <text class="t" x="12" y="84">Name</text>
+    <text class="t" x="12" y="108">GPA</text>
+  </g>
+  <g transform="translate(330,40)">
+    <rect class="b" width="240" height="140" rx="10"/>
+    <rect class="h" x="0" y="0" width="240" height="34" rx="10"/>
+    <text class="t" x="12" y="22">Programs</text>
+    <text class="t pk" x="12" y="60">ProgramID (PK)</text>
+    <text class="t" x="12" y="84">ProgramName</text>
+  </g>
+  <g transform="translate(630,40)">
+    <rect class="b" width="240" height="140" rx="10"/>
+    <rect class="h" x="0" y="0" width="240" height="34" rx="10"/>
+    <text class="t" x="12" y="22">Terms</text>
+    <text class="t pk" x="12" y="60">TermID (PK)</text>
+    <text class="t" x="12" y="84">TermName</text>
+  </g>
+  <g transform="translate(180,210)">
+    <rect class="b" width="560" height="200" rx="10"/>
+    <rect class="h" x="0" y="0" width="560" height="34" rx="10"/>
+    <text class="t" x="12" y="22">Enrollments</text>
+    <text class="t pk" x="12" y="60">EnrollmentID (PK)</text>
+    <text class="t fk" x="12" y="84">StudentID (FK)</text>
+    <text class="t fk" x="12" y="108">ProgramID (FK)</text>
+    <text class="t fk" x="12" y="132">TermID (FK)</text>
+    <text class="t" x="12" y="156">EnrollmentDate</text>
+  </g>
+  <line class="line" x1="210" y1="180" x2="210" y2="210"/>
+  <line class="line" x1="450" y1="180" x2="450" y2="210"/>
+  <line class="line" x1="750" y1="180" x2="740" y2="210"/>
+</svg>
